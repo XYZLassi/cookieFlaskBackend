@@ -1,0 +1,5 @@
+pytest~=7.2
+pytest-cov~=4.0
+memory-tempfile~=2.2
+httpie~=3.2
+fakeredis~=2.4
