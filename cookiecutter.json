@@ -2,5 +2,6 @@
     "url":"backend.mylassi.xyz",
     "repo_name":"{{cookiecutter.url| lower }}-Backend" ,
     "package_name":"{{cookiecutter.url | lower | replace('.','_') }}",
-    "redis_db":"{{cookiecutter.url | lower }}-tasks"
+    "redis_db":"{{cookiecutter.url | lower }}-tasks",
+    "admin_email":"test@example.com"
 }
