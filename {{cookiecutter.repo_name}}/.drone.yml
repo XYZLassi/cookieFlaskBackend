@@ -1,0 +1,16 @@
+kind: pipeline
+name: test
+type: docker
+
+trigger:
+  ref:
+    exclude:
+      - refs/tags/**
+
+steps:
+  - name: test
+    image: python:3.10-slim-buster
+    commands:
+      - pip install -r requirements/develop.txt
+      - pip install -r requirements/production.txt
+      - ./test.sh
