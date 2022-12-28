@@ -7,7 +7,7 @@ from flask.testing import FlaskClient
 
 from {{cookiecutter.package_name}} import create_app
 from {{cookiecutter.package_name}}.ext import db
-from {{cookiecutter.package_name}}.users.cli import create_user
+from {{cookiecutter.package_name}}.cli.user import create_user
 from . import ADMIN_DATA, USER_DATA
 
 

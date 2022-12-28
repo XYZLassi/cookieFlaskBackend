@@ -1,3 +1,5 @@
+__all__ = ['create_user']
+
 import click
 from flask import Blueprint
 
