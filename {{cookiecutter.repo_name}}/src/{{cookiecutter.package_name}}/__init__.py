@@ -3,6 +3,10 @@ __all__ = ['create_app', 'create_worker_app']
 from flask import Flask
 from .config import config
 
+# Load Models
+from .models import user
+from .models import task
+
 
 def create_worker_app(config_name: str = 'default') -> Flask:
     from .ext import db, migrate, socket
@@ -63,6 +67,10 @@ def load_errors(app: Flask):
 def load_blueprints(app: Flask):
     from .filters import bp as bp_filters
     app.register_blueprint(bp_filters)
+
+    # BackEnd-Blueprints
+    from .views.main import bp as bp_main
+    app.register_blueprint(bp_main)
 
 
 def load_cli(app: Flask):

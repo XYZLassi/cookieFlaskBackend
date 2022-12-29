@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    {% if title %}
+        <title>{{ title }}</title>
+    {% else %}
+        <title>XYZTradeBot</title>
+    {% endif %}
+
+    <!-- Stylesheets -->
+    <link href="/css/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/main.css" rel="stylesheet">
+    <!-- Scripts -->
+    <script src="js/bootstrap/bootstrap.bundle.min.js"></script>
+
+</head>
+<body>
+{% block body %}
+    <div class="container-fluid">
+        {% block container %}
+            <div class="row mb-2">
+                {% include '_includes/navbar_main.html' %}
+            </div>
+            {% block content %}
+                <div class="row m-0 m-md-2">
+                    <div class="col p-0 p-md-1">
+                        <div class="container-fluid p-0 p-md-1 mt-4">
+                            <div class="row mb-2 justify-content-center">
+                                {% block inline_content %}
+                                    <div class="col-12 col-lg-10">
+                                        {% block inline_content_10 %}
+                                        {% endblock %}
+                                    </div>
+                                {% endblock %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endblock %}
+            </div>
+        {% endblock %}
+
+    {% block body_script %}
+    {% endblock %}
+{% endblock %}
+</body>
+</html>

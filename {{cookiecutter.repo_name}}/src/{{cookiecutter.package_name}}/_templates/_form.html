@@ -1,0 +1,251 @@
+{% macro show_form(form,action='',method='POST',class_='',id='',data_table = false) %}
+    {% if not data_table %}
+        <form id="{{ id }}" class="{{ class_ }}" method="{{ method }}" action="{{ action }}" enctype="multipart/form-data">
+            {% for field in form %}
+                {{ show_field(field) }}
+            {% endfor %}
+        </form>
+    {% else %}
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Wert</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for field in form %}
+                {{ show_field_row(field) }}
+            {% endfor %}
+            </tbody>
+        </table>
+
+    {% endif %}
+{% endmacro %}
+
+{% macro show_field_row(field) %}
+    {% if field.type == 'CSRFTokenField' %}
+    {% elif field.type == 'SubmitField' %}
+    {% elif field.type == 'MarkdownField' %}
+        <tr>
+            <td>{{ field.label.text }}</td>
+            <td data-markdown>{{ field.data if field.data else '' }}</td>
+        </tr>
+    {% else %}
+        <tr>
+            <td>{{ field.label.text }}</td>
+            <td>{{ field.data if field.data else '' }}</td>
+        </tr>
+    {% endif %}
+{% endmacro %}
+
+{% macro show_field(field) %}
+    {% if field.type == 'StringField' %}
+        {{ print_input(field) }}
+    {% elif field.type == 'EmailField' %}
+        {{ print_input(field,'email') }}
+    {% elif field.type == 'DataListFile' %}
+        {{ print_data_list(field) }}
+    {% elif field.type == 'TextAreaField' %}
+        {{ print_textarea(field) }}
+    {% elif field.type == 'MarkdownField' %}
+        {{ print_markdownfield(field) }}
+    {% elif field.type == 'PasswordField' %}
+        {{ print_input(field,type='password') }}
+    {% elif field.type == 'IntegerField' %}
+        {{ print_integer_field(field) }}
+    {% elif field.type == 'FloatField' %}
+        {{ print_float_field(field) }}
+    {% elif field.type == 'BooleanField' %}
+        {{ print_boolean_field(field) }}
+    {% elif field.type == 'SelectStudentListField' %}
+        {{ print_select_student_list_field(field) }}
+    {% elif field.type == 'SelectField' %}
+        {{ print_select_field(field) }}
+    {% elif field.type == 'DateTimeField' %}
+        {{ print_datetime(field) }}
+    {% elif field.type == 'DateField' %}
+        {{ print_datetime(field) }}
+    {% elif field.type == 'SubmitField' %}
+        {{ print_submit(field) }}
+    {% elif field.type == 'SubmitAndBackField' %}
+        {{ print_submit_and_back(field) }}
+    {% elif field.type == 'CSRFTokenField' %}
+        {{ print_token(field) }}
+    {% elif field.type == 'FileField' %}
+        {{ print_filefield(field) }}
+    {% elif field.type == 'HiddenField' %}
+        {{ print_hidden_field(field) }}
+    {% elif field.type == 'HRField' %}
+        {{ print_hrfield(field) }}
+    {% else %}
+        <span>No Element for {{ field.type }}</span><br/>
+    {% endif %}
+{% endmacro %}
+
+{% macro print_input(field,type='text') %}
+    {% set disabled = field.render_kw and field.render_kw.disabled %}
+    <div class="form-group">
+        <label for="{{ field.id }}">{{ field.label.text }}</label>
+        <input type="{{ type }}" {{ 'disabled' if disabled else '' }} class="form-control" name="{{ field.name }}" id="{{ field.id }}"
+               value="{{ field.data if field.data else '' }}">
+        {{ print_errors(field) }}
+    </div>
+{% endmacro %}
+
+{% macro print_data_list(field) %}
+    <div class="form-group">
+        <label for="{{ field.id }}">{{ field.label.text }}</label>
+        <input list="{{ field.id }}" class="form-control" name="{{ field.name }}"
+               value="{{ field.data if field.data else '' }}">
+        <datalist id="{{ field.id }}">
+            {% for item in field.choices %}
+                <option value="{{ item }}">
+            {% endfor %}
+        </datalist>
+        {{ print_errors(field) }}
+    </div>
+{% endmacro %}
+
+{% macro print_textarea(field) %}
+    <div class="form-group">
+        <label for="{{ field.id }}">{{ field.label.text }}</label>
+        <textarea class="form-control" name="{{ field.name }}"
+                  id="{{ field.id }}">{{ field.data if field.data else '' }}</textarea>
+
+        {{ print_errors(field) }}
+    </div>
+{% endmacro %}
+
+{% macro print_markdownfield(field) %}
+
+    {% set disabled = field.render_kw and field.render_kw.disabled %}
+
+    <div class="form-group">
+        <label for="{{ field.id }}">{{ field.label.text }}</label>
+        <textarea {% if disabled %}readonly{% endif %} class="form-control markdown-control" name="{{ field.name }}"
+                  onchange=""
+                  id="{{ field.id }}">{{ field.data if field.data else '' }}</textarea>
+        {% if not disabled %}
+            <button class="btn btn-link" type="button"
+                    onclick="general.openStackEdit(document.querySelector('#{{ field.id }}'))">Open with StackEdit
+            </button>
+        {% endif %}
+        {{ print_errors(field) }}
+    </div>
+{% endmacro %}
+
+{% macro print_integer_field(field) %}
+    {% set value = '' %}
+    {% if field.default is not none %}
+        {% set value = field.default %}
+    {% endif %}
+    {% if field.data is not none %}
+        {% set value = field.data %}
+    {% endif %}
+
+    {% set class_list = '' %}
+    {% if field.render_kw and field.render_kw.class %}
+        {% set class_list = field.render_kw.class %}
+    {% endif %}
+
+
+    {% set disabled = field.render_kw and field.render_kw.disabled %}
+
+    <div class="form-group">
+        <label for="{{ field.id }}">{{ field.label.text }}</label>
+        <input type="number" {% if disabled %}readonly{% endif %} class="form-control {{ class_list }}" name="{{ field.name }}" id="{{ field.id }}"
+               value="{{ value }}">
+        {{ print_errors(field) }}
+    </div>
+{% endmacro %}
+
+{% macro print_float_field(field) %}
+    <div class="form-group">
+        <label for="{{ field.id }}">{{ field.label.text }}</label>
+        <input type="text" class="form-control" name="{{ field.name }}" id="{{ field.id }}"
+               value="{{ field.data if field.data is not none else '' }}">
+        {{ print_errors(field) }}
+    </div>
+{% endmacro %}
+
+
+{% macro print_boolean_field(field) %}
+    {%- set disabled = field.render_kw and field.render_kw['disabled'] -%}
+    <div class="form-check">
+        <input type="checkbox" {{ 'disabled' if disabled else '' }} {{ 'checked' if field.data else '' }} class="form-check-input" name="{{ field.name }}"
+               id="{{ field.id }}" value="y">
+        <label class="form-check-label" for="{{ field.id }}">{{ field.label.text }}</label>
+    </div>
+{% endmacro %}
+
+
+{% macro print_select_field(field) %}
+    <div class="form-group">
+        <label for="{{ field.id }}">{{ field.label.text }}</label>
+        <select class="form-control" id="{{ field.id }}" name="{{ field.name }}">
+            {% if field.choices %}
+                {% for choice in field.choices %}
+                    {% if choice is string %}
+                        <option value="{{ choice or '' }}" {% if choice== field.data %}selected{% endif %}>{{ choice }}</option>
+                    {% elif choice is sequence %}
+                        <option value="{{ choice[0] or '' }}"
+                                {% if choice[0]== field.data %}selected{% endif %}>{{ choice[1] }}</option>
+                    {% else %}
+                        <option value="{{ choice }}" {% if choice== field.data %}selected{% endif %}>{{ choice }}</option>
+                    {% endif %}
+
+                {% endfor %}
+            {% endif %}
+        </select>
+    </div>
+{% endmacro %}
+
+{% macro print_submit(field) %}
+    <button type="submit" name="{{ field.name }}" id="{{ field.id }}" class="btn btn-primary mt-2">
+        {{ field.label.text }}</button>
+{% endmacro %}
+
+{% macro print_submit_and_back(field) %}
+    {% if 'r' in request.args %}
+        <button type="submit" name="{{ field.name }}" id="{{ field.id }}" value="r" class="btn btn-primary mt-2">
+            {{ field.label.text }}</button>
+    {% endif %}
+{% endmacro %}
+
+{% macro print_token(field) %}
+    {{ field }}
+{% endmacro %}
+
+{% macro print_hidden_field(field) %}
+    {{ field }}
+{% endmacro %}
+
+{% macro print_datetime(field) %}
+    <div class="form-group">
+        <label for="{{ field.id }}">{{ field.label.text }}</label>
+        <input type="{{ type }}" class="form-control" name="{{ field.name }}" id="{{ field.id }}"
+               value="{{ field.data.strftime(field.format[0]) if field.data else '' }}">
+        {{ print_errors(field) }}
+    </div>
+{% endmacro %}
+
+{% macro print_filefield(field) %}
+    <div class="form-group">
+        <label for="{{ field.id }}">{{ field.label.text }}</label>
+        <input type="file" class="form-control-file" name="{{ field.name }}" id="{{ field.id }}">
+        {{ print_errors(field) }}
+    </div>
+{% endmacro %}
+
+{% macro print_hrfield(field) %}
+    <hr/>
+{% endmacro %}
+
+{% macro print_errors(field) %}
+    {% for error in field.errors %}
+        <small class="form-text text-danger">
+            {{ error }}
+        </small>
+    {% endfor %}
+{% endmacro %}

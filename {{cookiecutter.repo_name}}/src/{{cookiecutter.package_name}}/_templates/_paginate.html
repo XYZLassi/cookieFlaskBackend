@@ -1,0 +1,26 @@
+{% macro paginate_bar(paginate_object) %}
+    <nav aria-label="Page navigation">
+        <ul class="pagination">
+            {%- set prev_link = url_for(request.endpoint,page=paginate_object.prev_num,**kwargs)  if  paginate_object.has_prev -%}
+            {%- set next_link = url_for(request.endpoint,page=paginate_object.next_num,**kwargs)  if  paginate_object.has_next -%}
+            <li class="page-item {{ 'disabled' if not prev_link }}"><a class="page-link " href="{{ prev_link if prev_link }}">Previous</a></li>
+
+            {% for i in range(paginate_object.page - 10,paginate_object.page) %}
+                {% if i > 0 %}
+                    {%- set page_url = url_for(request.endpoint,page=i,**kwargs) -%}
+                    <li class="page-item d-none d-md-block"><a class="page-link" href="{{ page_url }}">{{ i }}</a></li>
+                {% endif %}
+            {% endfor %}
+
+            {% for i in range(paginate_object.page,paginate_object.page + 10) %}
+                {% if i <= paginate_object.pages %}
+                    {%- set page_url = url_for(request.endpoint,page=i,**kwargs) -%}
+                    <li class="page-item {{ 'active' if loop.first }} {{ 'd-none d-md-block' if loop.index0 >= 3 }}"><a class="page-link" href="{{ page_url }}">{{ i }}</a></li>
+                {% endif %}
+            {% endfor %}
+
+
+            <li class="page-item {{ 'disabled' if not next_link }}"><a class="page-link " href="{{ next_link if next_link }}">Next</a></li>
+        </ul>
+    </nav>
+{% endmacro %}
