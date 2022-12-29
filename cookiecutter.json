@@ -5,6 +5,6 @@
     "redis_db":"{{cookiecutter.url | lower }}-tasks",
     "admin_email":"test@example.com",
     "_copy_without_render": [
-        "src/{{cookiecutter.package_name}}/_templates",
+        "src/{{cookiecutter.package_name}}/_templates"
     ]
 }
