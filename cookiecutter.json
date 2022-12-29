@@ -3,5 +3,8 @@
     "repo_name":"{{cookiecutter.url| lower }}-Backend" ,
     "package_name":"{{cookiecutter.url | lower | replace('.','_') }}",
     "redis_db":"{{cookiecutter.url | lower }}-tasks",
-    "admin_email":"test@example.com"
+    "admin_email":"test@example.com",
+    "_copy_without_render": [
+        "src/{{cookiecutter.package_name}}/_templates",
+    ]
 }
